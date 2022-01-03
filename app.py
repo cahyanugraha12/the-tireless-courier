@@ -1,6 +1,7 @@
 import asyncio
+import importlib
 import json
-from typing import List, Union
+from typing import Any, Dict, List, Union
 
 import telegram
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -8,16 +9,15 @@ from flask import Flask
 from hikari import GatewayBot, undefined
 from hikari.events.message_events import GuildMessageCreateEvent
 from hikari.intents import Intents
-from hikari.messages import Mentions
 
-from discord import rest_send_message
+from discord.interfaces import IDiscordSchedule
 
 # Configuring Flask
 app = Flask(__name__)
 app.config.from_file("config.json", load=json.load)
 
 async def start_bot():
-    members = app.config.get("MEMBERS")
+    members: Dict[str, Any] = app.config.get("MEMBERS")
 
     # Config Discord Bot Setup
     discord_bot_token = app.config.get("DISCORD_BOT_TOKEN")
@@ -70,24 +70,21 @@ async def start_bot():
                             ]
                         )
 
-    # Set Scheduler
-    # scheduler = AsyncIOScheduler()
+    # Set Scheduler if Enabled
+    enable_scheduler = app.config.get("ENABLE_SCHEDULED_MESSAGE")
+    if enable_scheduler:
+        timezone = app.config.get("TIMEZONE")
+        path_to_scheduler_module = app.config.get("DISCORD_SCHEDULE_MODULE_PATH")
+        name_of_scheduler_class = app.config.get("DISCORD_SCHEDULE_CLASS_NAME")
+        scheduler_module = importlib.import_module(path_to_scheduler_module)
 
-    # genshin_daily_reminder_members = app.config.get("GENSHIN_DAILY_REMINDER_MEMBERS")
-    # genshin_daily_reminder_members_id_list = [members[x]['DISCORD_ID'] for x in genshin_daily_reminder_members]
-    
-    # TODO CHANGE THE SCHEDULE
-    # @scheduler.scheduled_job('interval', seconds=10)
-    # async def send_genshin_daily_reminder():
-    #     genshin_daily_reminder_message = "Ingat daily Genshin gan!"
-    #     await rest_send_message(
-    #         discord_bot,
-    #         discord_channel_id,
-    #         genshin_daily_reminder_message,
-    #         genshin_daily_reminder_members_id_list
-    #     )
-    
-    # scheduler.start()
+        scheduler = AsyncIOScheduler()
+
+        discord_scheduler: IDiscordSchedule = getattr(scheduler_module, name_of_scheduler_class)
+
+        scheduler = discord_scheduler.add_schedules(scheduler, timezone, discord_bot, discord_channel_id, members)
+        
+        scheduler.start()
 
     await discord_bot.start()
 

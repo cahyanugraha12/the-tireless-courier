@@ -20,5 +20,9 @@
     },
     "TELEGRAM_ID_TO_MEMBERS_MAPPING": {
         "Telegram ID of a user": "Unique key of that user in the MEMBERS field"
-    }
+    },
+    "ENABLE_SCHEDULED_MESSAGE": "set to true if you want to use Scheduled Message feature. You have to implement a class that use IDiscordSchedule interface for this.",
+    "TIMEZONE": "Timezone for the Scheduled Message, in pytz format",
+    "DISCORD_SCHEDULE_MODULE_PATH": "Path to your module that contain class implementation of IDiscordSchedule for scheduled message, for example 'discord.discord_schedule'",
+    "DISCORD_SCHEDULE_CLASS_NAME": "Name of your Discord Schedule class"
 }
