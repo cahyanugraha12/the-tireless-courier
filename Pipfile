@@ -12,6 +12,7 @@ apscheduler = "*"
 hikari = "2.0.0.dev105"
 requests = "*"
 python-telegram-bot = "*"
+gunicorn = "*"
 
 [dev-packages]
 
