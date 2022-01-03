@@ -1,14 +1,18 @@
 {
     // JSON doesn't support comment. Remove all comment when deploying.
     "DISCORD_BOT_TOKEN": "Self-explanatory",
+    "DISCORD_BOT_ID": "Self-explanatory",
     "DISCORD_GUILD_ID": "The Tireless Courier is intended to serve only one server/guild. Set this with the ID of the served guild",
     "DISCORD_CHANNEL_ID": "The Tireless Courier is intended to serve only one channel in a guild. Set this with the ID of the served channel",
     "TELEGRAM_BOT_TOKEN": "Self-explanatory",
+    "TELEGRAM_CHAT_ID": "The Tireless Courier is intended to serve only one telegram group. Set this with the ID of the served telegram group",
     "MEMBERS": { // List of all users that will be served by the bot.
         "UNIQUE_KEY": {
             "NAME": "How the bot will address this user",
             "DISCORD_ID": "Self-explanatory",
-            "TELEGRAM_ID": "Self-explanatory"
+            "TELEGRAM_ID": "Self-explanatory",
+            "TELEGRAM_USERNAME": "Self-explanatory",
+            "SEND_NOTIFICATION_ON_MENTION": "Set to boolean 'true' if you want the user to be notified on Telegram if they are mentioned in discord"
         }
     },
     "DISCORD_ID_TO_MEMBERS_MAPPING": {
