@@ -10,7 +10,7 @@ async def rest_send_message(
     ) -> None:
     if user_mentions:
         message += " "
-        message += "".join([f"<@{id}>" for id in user_mentions])
+        message += " ".join([f"<@{id}>" for id in user_mentions])
     else:
         user_mentions = undefined.UNDEFINED
     
