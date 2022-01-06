@@ -1,6 +1,7 @@
 import asyncio
 import importlib
 import json
+import random
 from typing import Any, Dict, List, Union
 
 import telegram
@@ -10,6 +11,7 @@ from hikari import GatewayBot, undefined
 from hikari.events.message_events import GuildMessageCreateEvent
 from hikari.intents import Intents
 
+from discord.discord_rest import rest_send_message
 from discord.interfaces import IDiscordSchedule
 
 # Configuring Flask
@@ -44,9 +46,30 @@ async def start_bot():
         if str(event.author_id) != discord_bot_id and str(event.channel_id) == discord_channel_id:
             author = members[discord_id_to_members_mapping[str(event.author_id)]]
 
-            # User Notification on Mention from Discord
             mentioned_user_ids: Union[List[str], undefined.UNDEFINED] = event.message.mentions.user_ids
+            mentioned_user_ids = [str(user_id_snowflake) for user_id_snowflake in mentioned_user_ids]
             if mentioned_user_ids is not undefined.UNDEFINED:
+                # Noelle Protect
+                KEYWORDS = ["takut", "protect", "help"]
+                NOELLE_RESPONSE = ["Leave it all to me.", "I will protect you.", "Leave it to me!"]
+                if discord_bot_id in mentioned_user_ids and event.content and any([keyword in str(event.content).lower() for keyword in KEYWORDS]):
+                    await rest_send_message(
+                        discord_bot,
+                        discord_channel_id,
+                        random.choice(NOELLE_RESPONSE),
+                        "https://static.wikia.nocookie.net/gensin-impact/images/1/16/Talent_Breastplate.gif",
+                        [str(event.author.id)]
+                    )
+                elif discord_bot_id in mentioned_user_ids and event.content and "\u2764\ufe0f" in event.content:
+                    await rest_send_message(
+                        discord_bot,
+                        discord_channel_id,
+                        "\u2764\ufe0f",
+                        "https://upload-os-bbs.mihoyo.com/upload/2021/03/19/119420173/fbaceb26508e5ae5741d70290052ef01_5762881856998492432.gif?x-oss-process=image/resize,s_740/quality,q_80/auto-orient,0/interlace,1/format,gif",
+                        [str(event.author.id)]
+                    )
+
+                # User Notification on Mention from Discord
                 mentioned_members = [members[discord_id_to_members_mapping[str(user_id)]]
                     if str(user_id) in discord_id_to_members_mapping else None
                     for user_id in mentioned_user_ids
